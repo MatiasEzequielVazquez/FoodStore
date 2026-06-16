@@ -1,0 +1,124 @@
+:root {
+    --color-primario: #ff6347;
+    --color-fondo: #f0f0f0;
+    --color-texto: #333;
+    --color-blanco: #fff;
+    --color-borde: #ddd;
+    --color-focus: #ff4500;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    color: var(--color-texto);
+    background-color: var(--color-fondo);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.inicio {
+    background-color: var(--color-blanco);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 48px 44px 36px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+}
+
+h1 {
+    color: var(--color-primario);
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 1.9rem;
+    letter-spacing: 3px;
+    margin-bottom: 6px;
+}
+
+.sesion {
+    font-size: 0.95rem;
+    color: #888;
+    margin-bottom: 28px;
+}
+
+.input { text-align: left; }
+
+.input-email, .input-pw, .input-campo { margin-bottom: 18px; }
+
+label {
+    display: block;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+    color: var(--color-texto);
+}
+
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--color-borde);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: var(--color-texto);
+    background-color: #fafafa;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: var(--color-focus);
+    background-color: var(--color-blanco);
+    box-shadow: 0 0 0 3px rgba(255, 69, 0, 0.1);
+}
+
+.btn {
+    display: block;
+    width: 100%;
+    margin-top: 26px;
+    padding: 13px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-blanco);
+    background-color: var(--color-primario);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.btn:hover {
+    background-color: var(--color-focus);
+    box-shadow: 0 4px 12px rgba(255, 69, 0, 0.35);
+}
+
+.registro {
+    margin-top: 22px;
+    font-size: 0.88rem;
+    color: #888;
+}
+
+.registro a {
+    color: var(--color-primario);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.registro a:hover { text-decoration: underline; }
+
+.mensaje {
+    margin-top: 14px;
+    font-size: 0.88rem;
+    font-weight: bold;
+    min-height: 20px;
+}

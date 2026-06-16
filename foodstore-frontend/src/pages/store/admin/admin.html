@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Store - Panel Admin</title>
+    <link rel="stylesheet" href="../store.css">
+    <link rel="stylesheet" href="./admin.css">
+</head>
+<body>
+
+    <header>
+        <h1>Food Store</h1>
+        <nav>
+            <span id="emailAdmin" style="font-size:0.85rem; color:#888;"></span>
+            <button class="btn-cerrar" id="btnCerrarSesion">Cerrar Sesión</button>
+        </nav>
+    </header>
+
+    <!-- El aside muestra navegación del panel -->
+    <aside>
+        <h2>Panel Admin</h2>
+        <ul id="listaCategorias">
+            <li>
+                <button class="activo" id="btnVerProductos">Productos</button>
+            </li>
+            <li>
+                <button id="btnVerFormulario">+ Agregar Producto</button>
+            </li>
+        </ul>
+    </aside>
+
+    <main>
+
+        <!-- SECCIÓN: Tabla de productos -->
+        <section id="seccionTabla">
+            <h2>Gestión de Productos</h2>
+            <p style="margin: 0.5rem 0 1.25rem; color:#888; font-size:0.88rem;">
+                Total: <strong id="totalProductos">0</strong> productos registrados
+            </p>
+
+            <div class="tabla-wrapper">
+                <table id="tablaProductos">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Disponible</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyProductos"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: Formulario agregar producto -->
+        <section id="seccionFormulario" style="display:none;">
+            <h2>Agregar Nuevo Producto</h2>
+            <br>
+            <form id="formProducto">
+                <fieldset class="form-fieldset">
+                    <legend>Datos del Producto</legend>
+
+                    <div class="form-grupo">
+                        <label for="inputNombre">Nombre del Producto:</label>
+                        <input
+                            id="inputNombre"
+                            type="text"
+                            name="nombre"
+                            placeholder="Ej: Lomito Completo"
+                            required
+                        />
+                    </div>
+
+                    <div class="form-grupo">
+                        <label for="inputPrecio">Precio ($):</label>
+                        <input
+                            id="inputPrecio"
+                            type="number"
+                            name="precio"
+                            min="0"
+                            placeholder="Ej: 5000"
+                            required
+                        />
+                    </div>
+
+                    <div class="form-grupo">
+                        <label for="inputStock">Stock Inicial:</label>
+                        <input
+                            id="inputStock"
+                            type="number"
+                            name="stock"
+                            min="0"
+                            placeholder="Ej: 10"
+                            required
+                        />
+                    </div>
+
+                    <div class="form-grupo">
+                        <label for="selectCategoria">Categoría:</label>
+                        <select id="selectCategoria" name="categoria" required>
+                            <option value="">Seleccione una categoría</option>
+                        </select>
+                    </div>
+
+                    <div class="form-grupo">
+                        <label for="inputDescripcion">Descripción:</label>
+                        <textarea
+                            id="inputDescripcion"
+                            name="descripcion"
+                            rows="3"
+                            minlength="10"
+                            maxlength="300"
+                            placeholder="Ingrese los ingredientes o descripción..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div class="form-acciones">
+                        <button type="submit" class="btn-guardar">Guardar Producto</button>
+                        <button type="reset" class="btn-reset">Limpiar</button>
+                    </div>
+                </fieldset>
+            </form>
+
+            <p id="mensajeFormulario" class="mensaje-form"></p>
+        </section>
+
+        <!-- SECCIÓN: Formulario editar producto -->
+        <section id="seccionEdicion" style="display:none;">
+            <h2>Editar Producto</h2>
+            <br>
+            <form id="formEdicion">
+                <input type="hidden" id="editId" />
+                <fieldset class="form-fieldset">
+                    <legend>Modificar datos del Producto</legend>
+
+                    <div class="form-grupo">
+                        <label for="editNombre">Nombre del Producto:</label>
+                        <input id="editNombre" type="text" name="nombre" required />
+                    </div>
+
+                    <div class="form-grupo">
+                        <label for="editPrecio">Precio ($):</label>
+                        <input id="editPrecio" type="number" name="precio" min="0" required />
+                    </div>
+
+                    <div class="form-grupo">
+                        <label for="editStock">Stock:</label>
+                        <input id="editStock" type="number" name="stock" min="0" required />
+                    </div>
+
+                    <div class="form-grupo">
+                        <label for="editCategoria">Categoría:</label>
+                        <select id="editCategoria" name="categoria" required>
+                            <option value="">Seleccione una categoría</option>
+                        </select>
+                    </div>
+
+                    <div class="form-grupo">
+                        <label for="editDescripcion">Descripción:</label>
+                        <textarea
+                            id="editDescripcion"
+                            name="descripcion"
+                            rows="3"
+                            minlength="10"
+                            maxlength="300"
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div class="form-acciones">
+                        <button type="submit" class="btn-guardar">Guardar Cambios</button>
+                        <button type="button" class="btn-reset" id="btnCancelarEdicion">Cancelar</button>
+                    </div>
+                </fieldset>
+            </form>
+
+            <p id="mensajeEdicion" class="mensaje-form"></p>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Food Store. Panel de Administración.</p>
+    </footer>
+
+    <script type="module" src="./admin.ts"></script>
+</body>
+</html>

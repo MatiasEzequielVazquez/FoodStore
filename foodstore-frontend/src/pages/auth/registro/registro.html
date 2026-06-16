@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Store - Registro</title>
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body>
+    <div class="inicio">
+        <h1>Food Store</h1>
+        <p class="sesion">Crear Cuenta</p>
+
+        <form id="form">
+            <div class="input">
+                <div class="input-campo">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required placeholder="tucorreo@ejemplo.com" />
+                </div>
+                <div class="input-campo">
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" name="password" required placeholder="Mínimo 8 caracteres" minlength="8" />
+                </div>
+                <div class="input-campo">
+                    <label for="confirmar">Confirmar Contraseña:</label>
+                    <input type="password" id="confirmar" name="confirmar" required placeholder="Repetí tu contraseña" />
+                </div>
+            </div>
+
+            <button class="btn" type="submit">Registrarse</button>
+        </form>
+
+        <p id="mensaje" class="mensaje"></p>
+
+        <p class="registro">
+            ¿Ya tenés cuenta? <a href="/src/pages/auth/login/login.html">Iniciá sesión</a>
+        </p>
+    </div>
+
+    <script type="module" src="./registro.ts"></script>
+</body>
+
+</html>
