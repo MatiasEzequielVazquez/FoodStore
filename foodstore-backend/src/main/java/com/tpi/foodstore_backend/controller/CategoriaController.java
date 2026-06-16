@@ -1,8 +1,8 @@
 package com.tpi.foodstore_backend.controller;
 
-import com.tpi.foodstore_backend.dto.CategoriaCreate;
-import com.tpi.foodstore_backend.dto.CategoriaDto;
-import com.tpi.foodstore_backend.dto.CategoriaEdit;
+import com.tpi.foodstore_backend.dto.categoria.CategoriaCreate;
+import com.tpi.foodstore_backend.dto.categoria.CategoriaDto;
+import com.tpi.foodstore_backend.dto.categoria.CategoriaEdit;
 import com.tpi.foodstore_backend.service.CategoriaService;
 import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.validation.Valid;

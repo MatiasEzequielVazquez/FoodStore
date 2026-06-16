@@ -1,8 +1,8 @@
 package com.tpi.foodstore_backend.service;
 
-import com.tpi.foodstore_backend.dto.CategoriaCreate;
-import com.tpi.foodstore_backend.dto.CategoriaDto;
-import com.tpi.foodstore_backend.dto.CategoriaEdit;
+import com.tpi.foodstore_backend.dto.categoria.CategoriaCreate;
+import com.tpi.foodstore_backend.dto.categoria.CategoriaDto;
+import com.tpi.foodstore_backend.dto.categoria.CategoriaEdit;
 
 import java.util.List;
 

@@ -1,8 +1,8 @@
 package com.tpi.foodstore_backend.service.impl;
 
-import com.tpi.foodstore_backend.dto.CategoriaCreate;
-import com.tpi.foodstore_backend.dto.CategoriaDto;
-import com.tpi.foodstore_backend.dto.CategoriaEdit;
+import com.tpi.foodstore_backend.dto.categoria.CategoriaCreate;
+import com.tpi.foodstore_backend.dto.categoria.CategoriaDto;
+import com.tpi.foodstore_backend.dto.categoria.CategoriaEdit;
 import com.tpi.foodstore_backend.model.Categoria;
 import com.tpi.foodstore_backend.repository.CategoriaRepository;
 import com.tpi.foodstore_backend.service.CategoriaService;

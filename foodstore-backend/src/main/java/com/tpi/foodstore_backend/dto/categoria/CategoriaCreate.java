@@ -1,4 +1,4 @@
-package com.tpi.foodstore_backend.dto;
+package com.tpi.foodstore_backend.dto.categoria;
 
 
 import jakarta.validation.constraints.NotBlank;
