@@ -1,4 +1,7 @@
 package com.tpi.foodstore_backend.dto;
 
-public class CategoriaDto {
-}
+public record CategoriaDto(
+        Long id,
+        String nombre,
+        String descripcion
+) {}
