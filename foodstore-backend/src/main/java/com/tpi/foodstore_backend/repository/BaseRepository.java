@@ -10,19 +10,21 @@ import java.util.Optional;
 
 @NoRepositoryBean
 public interface BaseRepository<E extends Base, ID> extends JpaRepository<E, ID> {
-    public List<E> findAllByEliminadoFalse();
 
-    public Optional<E> findByIdAndEliminadoFalse(ID id);
+    List<E> findAllByEliminadoFalse();
 
-    default List<E> findAll(){
+    Optional<E> findByIdAndEliminadoFalse(ID id);
+
+    default List<E> findAll() {
         return findAllByEliminadoFalse();
     }
 
-    default E findByIdOrThrow(ID id){
-        return findByIdAndEliminadoFalse(id).orElseThrow(() -> new ResourceNotFoundException((Long) id));
+    default E findByIdOrThrow(ID id) {
+        return findByIdAndEliminadoFalse(id)
+                .orElseThrow(() -> new ResourceNotFoundException((Long) id));
     }
 
-    default void deleteById(ID id){
+    default void deleteById(ID id) {
         E entidad = findByIdOrThrow(id);
         entidad.setEliminado(true);
         save(entidad);

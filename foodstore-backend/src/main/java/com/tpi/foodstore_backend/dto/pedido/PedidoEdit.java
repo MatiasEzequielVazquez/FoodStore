@@ -1,4 +1,10 @@
 package com.tpi.foodstore_backend.dto.pedido;
 
-public record PedidoEdit() {
-}
+import com.tpi.foodstore_backend.model.enums.Estado;
+import com.tpi.foodstore_backend.model.enums.FormaPago;
+
+public record PedidoEdit(
+        Estado estado,
+
+        FormaPago formaPago
+) {}

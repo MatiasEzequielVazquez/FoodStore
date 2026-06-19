@@ -22,8 +22,12 @@ public class DetallePedido extends Base{
     private BigDecimal subtotal;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pedido_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Pedido pedido;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "producto_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Producto producto;
 }

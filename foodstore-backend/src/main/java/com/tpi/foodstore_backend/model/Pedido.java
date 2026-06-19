@@ -30,5 +30,7 @@ public class Pedido extends Base{
     private Usuario usuario;
     @Builder.Default
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<DetallePedido> detallePedidos = new HashSet<>();
 }

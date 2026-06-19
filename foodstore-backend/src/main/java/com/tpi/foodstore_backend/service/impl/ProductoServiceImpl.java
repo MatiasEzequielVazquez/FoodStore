@@ -4,7 +4,6 @@ import com.tpi.foodstore_backend.dto.categoria.CategoriaDto;
 import com.tpi.foodstore_backend.dto.producto.ProductoCreate;
 import com.tpi.foodstore_backend.dto.producto.ProductoDto;
 import com.tpi.foodstore_backend.dto.producto.ProductoEdit;
-import com.tpi.foodstore_backend.exception.BusinessException;
 import com.tpi.foodstore_backend.model.Categoria;
 import com.tpi.foodstore_backend.model.Producto;
 import com.tpi.foodstore_backend.repository.CategoriaRepository;
@@ -57,7 +56,7 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     public List<ProductoDto> findByCategoriaId(Long categoriaId){
-        categoriaRepository.findByIdOrThrow(categoriaId); // verifica que existe
+        categoriaRepository.findByIdOrThrow(categoriaId);
         List<Producto> productos = productoRepository.findAllByCategoriaIdAndEliminadoFalse(categoriaId);
         List<ProductoDto> dtos = new ArrayList<>();
         for (Producto p : productos){
