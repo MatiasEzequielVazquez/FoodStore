@@ -17,10 +17,10 @@ public class UserLoad implements CommandLineRunner {
     public void run(String[] args) {
         if (usuarioRepository.count() == 0) {
             Usuario admin = Usuario.builder()
-                    .nombre("Matias")
-                    .apellido("Vazquez")
-                    .email("vazquez.matias.e@gmail.com")
-                    .password(passwordEncoder.encode("123456"))
+                    .nombre("admin")
+                    .apellido("foodstore")
+                    .email("admin@foodstore.com")
+                    .password(passwordEncoder.encode("admin1234"))
                     .rol(Rol.ADMIN)
                     .build();
 
