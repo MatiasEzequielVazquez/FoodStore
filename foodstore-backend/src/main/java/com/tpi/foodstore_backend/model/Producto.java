@@ -18,6 +18,7 @@ public class Producto extends Base {
     private String descripcion;
     private BigDecimal precio;
     private int stock;
+    @Column(length = 500)
     private String imagen;
     @Builder.Default
     private boolean disponible = true;
