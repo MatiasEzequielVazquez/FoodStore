@@ -51,3 +51,15 @@ export const getProductsByCategory = async (categoriaId: number) => {
   }
   return response.json();
 };
+
+export const createOrder = async (data: {estado: string; formaPago: string; idUsuario: number; detallePedido: { idProducto: number; cantidad: number }[];}) => {
+  const response = await fetch(`${API_URL}/pedidos`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    throw new Error("No se pudo registrar el pedido");
+  }
+  return response.json();
+};

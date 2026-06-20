@@ -1,6 +1,6 @@
 import type { CartItem } from "../../../types/product";
 import { protegerRuta, cerrarSesion } from "../../../utils/auth";
-
+import { createOrder } from "../../../utils/api";
 // Guard: solo usuarios autenticados
 protegerRuta("client");
 
@@ -8,6 +8,8 @@ protegerRuta("client");
 const carritoContenido = document.querySelector<HTMLDivElement>("#carritoContenido");
 const contadorCarrito = document.querySelector<HTMLSpanElement>("#contadorCarrito");
 const btnCerrarSesion = document.querySelector<HTMLButtonElement>("#btnCerrarSesion");
+
+let mensajeEl: HTMLParagraphElement | null = null;
 
 btnCerrarSesion?.addEventListener("click", (): void => {
     cerrarSesion();
@@ -141,6 +143,54 @@ const renderCarrito = (): void => {
     btnVaciar.style.marginTop = "1rem";
     btnVaciar.addEventListener("click", (): void => vaciarCarrito());
     carritoContenido.appendChild(btnVaciar);
+
+    const btnConfirmar = document.createElement("button");
+    btnConfirmar.textContent = "Confirmar pedido";
+    btnConfirmar.classList.add("btn-confirmar");
+    btnConfirmar.style.marginTop = "1rem";
+    btnConfirmar.addEventListener("click", (): void => { confirmarPedido(); });
+    carritoContenido.appendChild(btnConfirmar);
+
+    mensajeEl = document.createElement("p");
+    mensajeEl.classList.add("mensaje");
+    carritoContenido.appendChild(mensajeEl);
+};
+
+// Botón confirmar pedido
+const confirmarPedido = async (): Promise<void> => {
+    const carrito: CartItem[] = obtenerCarrito();
+    if (carrito.length === 0) return;
+
+    const userData = localStorage.getItem("userData");
+    if (!userData) return;
+    const usuario = JSON.parse(userData);
+
+    const detallePedido = carrito.map((item: CartItem) => ({
+        idProducto: item.id,
+        cantidad: item.cantidad,
+    }));
+
+    try {
+        await createOrder({
+            estado: "PENDIENTE",
+            formaPago: "EFECTIVO",
+            idUsuario: usuario.id,
+            detallePedido,
+        });
+        localStorage.removeItem("carrito");
+        if (mensajeEl) {
+            mensajeEl.textContent = "¡Pedido confirmado con éxito!";
+            mensajeEl.style.color = "green";
+        }
+        setTimeout((): void => {
+            window.location.href = "../home/home.html";
+        }, 1500);
+    } catch (error) {
+        if (mensajeEl) {
+            mensajeEl.textContent = "No se pudo confirmar el pedido. Verificá el stock disponible.";
+            mensajeEl.style.color = "red";
+        }
+    }
 };
 
 // ── Inicialización ──

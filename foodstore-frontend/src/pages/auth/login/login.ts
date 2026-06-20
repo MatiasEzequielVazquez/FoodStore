@@ -17,6 +17,7 @@ form.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
     const usuarioDto = await loginUser(email, password);
 
     const usuarioLogueado: IUser = {
+      id: usuarioDto.id,
       email: usuarioDto.email,
       password: "",
       loggedIn: true,
