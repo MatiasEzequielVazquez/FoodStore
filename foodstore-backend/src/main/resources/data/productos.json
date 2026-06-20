@@ -5,7 +5,7 @@
     "precio": 4500,
     "descripcion": "Carne 150g, lechuga, tomate, cebolla morada y mayonesa",
     "stock": 50,
-    "imagen": "https://foodish-api.com/images/burger/burger1.jpg",
+    "imagen": "https://images.pexels.com/photos/15010311/pexels-photo-15010311.jpeg",
     "disponible": true,
     "categoria": { "id": 1, "nombre": "Hamburguesas", "descripcion": "Hamburguesas artesanales con carne premium" }
   },
@@ -15,7 +15,7 @@
     "precio": 6200,
     "descripcion": "Doble carne 150g c/u, cheddar, panceta y salsa barbacoa",
     "stock": 40,
-    "imagen": "https://foodish-api.com/images/burger/burger2.jpg",
+    "imagen": "https://images.pexels.com/photos/3915915/pexels-photo-3915915.jpeg",
     "disponible": true,
     "categoria": { "id": 1, "nombre": "Hamburguesas", "descripcion": "Hamburguesas artesanales con carne premium" }
   },
@@ -23,9 +23,9 @@
     "id": 3,
     "nombre": "Hamburguesa Completa",
     "precio": 5500,
-    "descripcion": "Carne 150g, huevo, jamón, queso, lechuga y tomate",
+    "descripcion": "Carne 150g, huevo, jamón, queso, lechuga, tomate y cebolla",
     "stock": 30,
-    "imagen": "https://foodish-api.com/images/burger/burger3.jpg",
+    "imagen": "https://images.pexels.com/photos/34407519/pexels-photo-34407519.jpeg",
     "disponible": true,
     "categoria": { "id": 1, "nombre": "Hamburguesas", "descripcion": "Hamburguesas artesanales con carne premium" }
   },
@@ -45,7 +45,7 @@
     "precio": 3800,
     "descripcion": "Mozzarella, salsa de tomate y orégano",
     "stock": 25,
-    "imagen": "https://foodish-api.com/images/pizza/pizza1.jpg",
+    "imagen": "https://images.pexels.com/photos/17403901/pexels-photo-17403901.jpeg",
     "disponible": true,
     "categoria": { "id": 2, "nombre": "Pizzas", "descripcion": "Pizzas al horno de barro" }
   },
@@ -55,7 +55,7 @@
     "precio": 4500,
     "descripcion": "Mozzarella, rodajas de tomate, ajo, aceitunas y albahaca",
     "stock": 25,
-    "imagen": "https://foodish-api.com/images/pizza/pizza2.jpg",
+    "imagen": "https://images.pexels.com/photos/35759993/pexels-photo-35759993.jpeg",
     "disponible": true,
     "categoria": { "id": 2, "nombre": "Pizzas", "descripcion": "Pizzas al horno de barro" }
   },
@@ -63,9 +63,9 @@
     "id": 7,
     "nombre": "Pizza Fugazzeta",
     "precio": 4800,
-    "descripcion": "Mozzarella, cebolla caramelizada, jamón y aceitunas",
+    "descripcion": "Mozzarella, cebolla caramelizada y jamón",
     "stock": 20,
-    "imagen": "https://foodish-api.com/images/pizza/pizza3.jpg",
+    "imagen": "https://images.pexels.com/photos/31094820/pexels-photo-31094820.jpeg",
     "disponible": true,
     "categoria": { "id": 2, "nombre": "Pizzas", "descripcion": "Pizzas al horno de barro" }
   },
@@ -73,9 +73,9 @@
     "id": 8,
     "nombre": "Pizza Especial",
     "precio": 5200,
-    "descripcion": "Mozzarella, pepperoni, morrón, cebolla, huevo y aceitunas",
+    "descripcion": "Mozzarella y pepperoni",
     "stock": 15,
-    "imagen": "https://foodish-api.com/images/pizza/pizza4.jpg",
+    "imagen": "https://images.pexels.com/photos/12557600/pexels-photo-12557600.jpeg",
     "disponible": true,
     "categoria": { "id": 2, "nombre": "Pizzas", "descripcion": "Pizzas al horno de barro" }
   },
@@ -188,5 +188,15 @@
     "imagen": "https://imgs.search.brave.com/MbIsq2iRx49GR24H-kWPDldGSqyiU7O9Xzc1JGEw0_Q/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Y2xhcmluLmNvbS9p/bWcvMTk2OS8xMi8z/MS9Ia1JQTEdKRWxf/MTI1Nng2MjBfXzEu/anBnIzE1ODQxMTM5/ODY3NDM",
     "disponible": true,
     "categoria": { "id": 5, "nombre": "Papas Fritas", "descripcion": "Acompañamientos crujientes" }
+  },
+  {
+    "id": 20,
+    "nombre": "Tallarines con tuco",
+    "precio": 5000,
+    "descripcion": "Tallarines caseros con salsa bolognesa",
+    "stock": 20,
+    "imagen": "https://images.pexels.com/photos/34382330/pexels-photo-34382330.jpeg",
+    "disponible": true,
+    "categoria": { "id": 6, "nombre": "Pastas", "descripcion": "Pastas frescas con salsas varias" }
   }
 ]

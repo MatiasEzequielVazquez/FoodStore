@@ -3,5 +3,6 @@
   { "id": 2, "nombre": "Pizzas", "descripcion": "Pizzas al horno de barro" },
   { "id": 3, "nombre": "Empanadas", "descripcion": "Empanadas caseras horneadas" },
   { "id": 4, "nombre": "Bebidas", "descripcion": "Bebidas frías y calientes" },
-  { "id": 5, "nombre": "Papas Fritas", "descripcion": "Acompañamientos crujientes" }
+  { "id": 5, "nombre": "Papas Fritas", "descripcion": "Acompañamientos crujientes" },
+  { "id": 6, "nombre": "Pastas", "descripcion": "Pastas frescas con salsas varias" }
 ]

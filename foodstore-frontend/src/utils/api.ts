@@ -21,3 +21,33 @@ export const registerUser = async (data: { nombre: string; apellido: string; ema
   }
   return response.json();
 };
+
+export const getCategories = async () => {
+  const response = await fetch(`${API_URL}/categorias`, {
+    method: "GET",
+  });
+  if (!response.ok) {
+    throw new Error("No se pudieron obtener las categorías");
+  }
+  return response.json();
+};
+
+export const getProducts = async () => {
+  const response = await fetch(`${API_URL}/productos`, {
+    method: "GET",
+  });
+  if (!response.ok) {
+    throw new Error("No se pudieron obtener los productos");
+  }
+  return response.json();
+};
+
+export const getProductsByCategory = async (categoriaId: number) => {
+  const response = await fetch(`${API_URL}/productos/categoria/${categoriaId}`, {
+    method: "GET",
+  });
+  if (!response.ok) {
+    throw new Error("No se pudieron obtener los productos de la categoría");
+  }
+  return response.json();
+};

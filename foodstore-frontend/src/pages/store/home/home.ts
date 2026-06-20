@@ -1,9 +1,8 @@
-import { getCategories } from "../../../data/data";
-import type { Product } from "../../../types/product";
-import type { ICategory } from "../../../types/category";
 import type { CartItem } from "../../../types/product";
 import { protegerRuta, cerrarSesion } from "../../../utils/auth";
-import { getProductos } from "../../../utils/localStorage";
+import { getCategories, getProducts, getProductsByCategory } from "../../../utils/api"
+import type { IProductoDto, ICategoriaDto } from "../../../types/IBackendDtos"
+
 
 // Guard: solo usuarios autenticados acceden al catálogo
 protegerRuta("client");
@@ -42,7 +41,7 @@ const guardarCarrito = (items: CartItem[]): void => {
 };
 
 // ── Carrito: agregar producto ──
-const agregarAlCarrito = (producto: Product): void => {
+const agregarAlCarrito = (producto: IProductoDto): void => {
     const carrito: CartItem[] = obtenerCarrito();
 
     const itemExistente: CartItem | undefined = carrito.find(
@@ -88,7 +87,7 @@ const mostrarToast = (mensaje: string): void => {
 };
 
 // ── Renderizar productos ──
-const renderProductos = (productos: Product[]): void => {
+const renderProductos = (productos: IProductoDto[]): void => {
     if (!contenedor) return;
     contenedor.innerHTML = "";
 
@@ -97,14 +96,14 @@ const renderProductos = (productos: Product[]): void => {
         return;
     }
 
-    productos.forEach((producto: Product): void => {
+    productos.forEach((producto: IProductoDto): void => {
         const article = document.createElement("article");
         article.classList.add("card-producto");
 
-        const categoria: string = producto.categorias[0]?.nombre ?? "";
+        const categoria: string = producto.categoria?.nombre ?? "";
 
         article.innerHTML = `
-            <img src="/vite.svg" alt="${producto.nombre}" />
+            <img src="${producto.imagen}" alt="${producto.nombre}" />
             <div class="card-body">
                 <span class="card-badge">${categoria}</span>
                 <h3>${producto.nombre}</h3>
@@ -132,9 +131,9 @@ const renderProductos = (productos: Product[]): void => {
 };
 
 // ── Renderizar categorías en el aside ──
-const renderCategorias = (): void => {
+const renderCategorias = async (): Promise<void> => {
     if (!listaCategorias) return;
-    const categorias: ICategory[] = getCategories();
+    const categorias: ICategoriaDto[] = await getCategories();
 
     const liTodos = document.createElement("li");
     const btnTodos = document.createElement("button");
@@ -151,7 +150,7 @@ const renderCategorias = (): void => {
     liTodos.appendChild(btnTodos);
     listaCategorias.appendChild(liTodos);
 
-    categorias.forEach((cat: ICategory): void => {
+    categorias.forEach((cat: ICategoriaDto): void => {
         const li = document.createElement("li");
         const btn = document.createElement("button");
         btn.textContent = cat.nombre;
@@ -178,19 +177,19 @@ const marcarBotonActivo = (botonActivo: HTMLButtonElement): void => {
 };
 
 // ── Aplica búsqueda + filtro de categoría ──
-const aplicarFiltros = (): void => {
+const aplicarFiltros = async (): Promise<void> => {
     // Lee siempre desde localStorage para ver cambios del admin
-    let resultado: Product[] = getProductos();
+    let resultado: IProductoDto[] = await getProducts();
 
     if (categoriaActiva !== null) {
-        resultado = resultado.filter((p: Product) =>
-            p.categorias.some((c: ICategory) => c.id === categoriaActiva)
+        resultado = resultado.filter((p: IProductoDto) =>
+            p.categoria?.id === categoriaActiva
         );
     }
 
     if (textoBusqueda.trim() !== "") {
         const texto: string = textoBusqueda.toLowerCase();
-        resultado = resultado.filter((p: Product) =>
+        resultado = resultado.filter((p: IProductoDto) =>
             p.nombre.toLowerCase().includes(texto)
         );
     }
@@ -216,6 +215,10 @@ inputBusqueda?.addEventListener("input", (): void => {
 });
 
 // ── Inicialización ──
-renderCategorias();
-aplicarFiltros();
-actualizarContador();
+const init = async (): Promise<void> => {
+    await renderCategorias();
+    await aplicarFiltros();
+    actualizarContador();
+};
+
+init();
