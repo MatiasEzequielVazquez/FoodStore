@@ -1,9 +1,8 @@
-
 import { protegerRuta, cerrarSesion } from "../../../utils/auth";
 import { getUSer } from "../../../utils/localStorage";
 import type { IUser } from "../../../types/IUser";
-import { deleteProduct, getProducts, getCategories, getProductById, createProduct, updateProduct} from "../../../utils/api";
-import type { ICategoriaDto, IProductoDto } from "../../../types/IBackendDtos";
+import { deleteProduct, getProducts, getCategories, getProductById, createProduct, updateProduct, getAllOrders, updateOrderStatus } from "../../../utils/api";import type { ICategoriaDto, IProductoDto } from "../../../types/IBackendDtos";
+import type { IPedidoDto } from "../../../types/IBackendDtos";
 
 // Guard: solo admin puede acceder
 protegerRuta("admin");
@@ -25,6 +24,10 @@ const mensajeEdicion = document.querySelector<HTMLParagraphElement>("#mensajeEdi
 const emailAdmin = document.querySelector<HTMLSpanElement>("#emailAdmin");
 const btnCerrarSesion = document.querySelector<HTMLButtonElement>("#btnCerrarSesion");
 const btnCancelarEdicion = document.querySelector<HTMLButtonElement>("#btnCancelarEdicion");
+const btnVerPedidos = document.querySelector<HTMLButtonElement>("#btnVerPedidos");
+const seccionPedidos = document.querySelector<HTMLElement>("#seccionPedidos");
+const pedidosAdminContenido = document.querySelector<HTMLDivElement>("#pedidosAdminContenido");
+const totalPedidos = document.querySelector<HTMLSpanElement>("#totalPedidos");
 
 // Campos del formulario de edición
 const editId = document.querySelector<HTMLInputElement>("#editId");
@@ -47,13 +50,15 @@ btnCerrarSesion?.addEventListener("click", (): void => {
 });
 
 // ── Helper: muestra solo una sección y actualiza botones activos ──
-const mostrarSeccion = (seccion: "tabla" | "formulario" | "edicion"): void => {
+const mostrarSeccion = (seccion: "tabla" | "formulario" | "edicion" | "pedidos"): void => {
     if (seccionTabla) seccionTabla.style.display = seccion === "tabla" ? "block" : "none";
     if (seccionFormulario) seccionFormulario.style.display = seccion === "formulario" ? "block" : "none";
     if (seccionEdicion) seccionEdicion.style.display = seccion === "edicion" ? "block" : "none";
+    if (seccionPedidos) seccionPedidos.style.display = seccion === "pedidos" ? "block" : "none";
 
     btnVerProductos?.classList.toggle("activo", seccion === "tabla");
     btnVerFormulario?.classList.toggle("activo", seccion === "formulario");
+    btnVerPedidos?.classList.toggle("activo", seccion === "pedidos");
 };
 
 // ── Navegación entre secciones ──
@@ -64,6 +69,11 @@ btnVerProductos?.addEventListener("click", async (): Promise<void> => {
 
 btnVerFormulario?.addEventListener("click", (): void => {
     mostrarSeccion("formulario");
+});
+
+btnVerPedidos?.addEventListener("click", async (): Promise<void> => {
+    mostrarSeccion("pedidos");
+    await renderPedidosAdmin();
 });
 
 btnCancelarEdicion?.addEventListener("click", async (): Promise<void> => {
@@ -208,6 +218,68 @@ const renderTabla = async (): Promise<void> => {
             });
 
         tbodyProductos.appendChild(tr);
+    });
+};
+
+// ── Renderizar sección de pedidos para admin ──
+const renderPedidosAdmin = async (): Promise<void> => {
+    if (!pedidosAdminContenido) return;
+
+    const pedidos: IPedidoDto[] = await getAllOrders();
+    pedidosAdminContenido.innerHTML = "";
+
+    if (totalPedidos) {
+        totalPedidos.textContent = pedidos.length.toString();
+    }
+
+    pedidos.forEach((pedido: IPedidoDto): void => {
+        const div = document.createElement("div");
+        div.classList.add("pedido-card");
+
+        const detallesHtml: string = pedido.detalles
+            .map((detalle) => `
+                <div class="pedido-detalle-item">
+                    <span>${detalle.cantidad}x ${detalle.producto.nombre}</span>
+                    <span>$${detalle.subtotal.toLocaleString("es-AR")}</span>
+                </div>
+            `)
+            .join("");
+
+        div.innerHTML = `
+            <div class="pedido-header">
+                <span class="pedido-numero">Pedido #${pedido.id} - Usuario #${pedido.idUsuario}</span>
+                <span class="pedido-estado pedido-estado-${pedido.estado.toLowerCase()}">${pedido.estado}</span>
+            </div>
+            <p class="pedido-fecha">${pedido.fecha}</p>
+            <div class="pedido-detalles">
+                ${detallesHtml}
+            </div>
+            <div class="pedido-total">
+                <span>Total:</span>
+                <span>$${pedido.total.toLocaleString("es-AR")}</span>
+            </div>
+            <div class="form-grupo" style="margin-top: 0.75rem;">
+                <label>Cambiar estado:</label>
+                <select class="select-estado-pedido" data-id="${pedido.id}">
+                    <option value="PENDIENTE" ${pedido.estado === "PENDIENTE" ? "selected" : ""}>Pendiente</option>
+                    <option value="CONFIRMADO" ${pedido.estado === "CONFIRMADO" ? "selected" : ""}>Confirmado</option>
+                    <option value="TERMINADO" ${pedido.estado === "TERMINADO" ? "selected" : ""}>Terminado</option>
+                    <option value="CANCELADO" ${pedido.estado === "CANCELADO" ? "selected" : ""}>Cancelado</option>
+                </select>
+            </div>
+        `;
+
+        const select = div.querySelector<HTMLSelectElement>(".select-estado-pedido");
+        select?.addEventListener("change", async (): Promise<void> => {
+            try {
+                await updateOrderStatus(pedido.id, select.value);
+                await renderPedidosAdmin();
+            } catch (error) {
+                alert("No se pudo actualizar el estado del pedido.");
+            }
+        });
+
+        pedidosAdminContenido.appendChild(div);
     });
 };
 

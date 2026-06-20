@@ -119,3 +119,25 @@ export const getProductById = async (id: number) => {
   }
   return response.json();
 };
+
+export const getAllOrders = async () => {
+  const response = await fetch(`${API_URL}/pedidos`, {
+    method: "GET",
+  });
+  if (!response.ok) {
+    throw new Error("No se pudieron obtener los pedidos");
+  }
+  return response.json();
+};
+
+export const updateOrderStatus = async (id: number, estado: string) => {
+  const response = await fetch(`${API_URL}/pedidos/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ estado }),
+  });
+  if (!response.ok) {
+    throw new Error("No se pudo actualizar el estado del pedido");
+  }
+  return response.json();
+};

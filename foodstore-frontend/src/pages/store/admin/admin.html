@@ -27,6 +27,9 @@
             <li>
                 <button id="btnVerFormulario">+ Agregar Producto</button>
             </li>
+            <li>
+                <button id="btnVerPedidos">Pedidos</button>
+            </li>
         </ul>
     </aside>
 
@@ -196,6 +199,16 @@
             </form>
 
             <p id="mensajeEdicion" class="mensaje-form"></p>
+        </section>
+
+        <!-- SECCIÓN: Gestión de pedidos -->
+        <section id="seccionPedidos" style="display:none;">
+            <h2>Gestión de Pedidos</h2>
+            <p style="margin: 0.5rem 0 1.25rem; color:#888; font-size:0.88rem;">
+                Total: <strong id="totalPedidos">0</strong> pedidos registrados
+            </p>
+
+            <div id="pedidosAdminContenido"></div>
         </section>
 
     </main>
