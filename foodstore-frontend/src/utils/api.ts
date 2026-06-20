@@ -63,3 +63,14 @@ export const createOrder = async (data: {estado: string; formaPago: string; idUs
   }
   return response.json();
 };
+
+
+export const getOrdersByUser = async (userId: number) => {
+  const response = await fetch(`${API_URL}/pedidos/usuario/${userId}`, {
+    method: "GET",
+  });
+  if (!response.ok) {
+    throw new Error("No se pudieron obtener los pedidos del usuario");
+  }
+  return response.json();
+};

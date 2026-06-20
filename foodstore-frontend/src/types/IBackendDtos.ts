@@ -14,3 +14,20 @@ export interface ICategoriaDto {
   nombre: string;
   descripcion: string;
 }
+
+export interface IDetallePedidoDto {
+  id: number;
+  cantidad: number;
+  subtotal: number;
+  producto: IProductoDto;
+}
+
+export interface IPedidoDto {
+  id: number;
+  fecha: string;
+  estado: string;
+  total: number;
+  formaPago: string;
+  idUsuario: number;
+  detalles: IDetallePedidoDto[];
+}

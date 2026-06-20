@@ -497,3 +497,92 @@ footer {
     font-weight: 600;
     min-height: 20px;
 }
+
+/* ── MIS PEDIDOS ── */
+.pedidos-container {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.pedidos-container h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+}
+
+.pedido-card {
+    background: var(--color-blanco);
+    border: 1px solid var(--color-borde);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.pedido-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.pedido-numero {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.pedido-estado {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    background: #eee;
+    color: #555;
+}
+
+.pedido-estado-pendiente {
+    background: rgba(255, 152, 0, 0.15);
+    color: #e65100;
+}
+
+.pedido-estado-confirmado {
+    background: rgba(33, 150, 243, 0.15);
+    color: #1565c0;
+}
+
+.pedido-estado-terminado {
+    background: rgba(76, 175, 80, 0.15);
+    color: #2e7d32;
+}
+
+.pedido-estado-cancelado {
+    background: rgba(244, 67, 54, 0.15);
+    color: #c62828;
+}
+
+.pedido-fecha {
+    font-size: 0.82rem;
+    color: var(--color-texto-muted);
+    margin-bottom: 0.75rem;
+}
+
+.pedido-detalles {
+    border-top: 1px solid var(--color-borde);
+    border-bottom: 1px solid var(--color-borde);
+    padding: 0.75rem 0;
+    margin-bottom: 0.75rem;
+}
+
+.pedido-detalle-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+    padding: 0.25rem 0;
+}
+
+.pedido-total {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 1rem;
+}
