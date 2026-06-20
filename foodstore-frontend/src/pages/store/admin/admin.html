@@ -25,10 +25,10 @@
                 <button class="activo" id="btnVerProductos">Productos</button>
             </li>
             <li>
-                <button id="btnVerFormulario">+ Agregar Producto</button>
+                <button id="btnVerPedidos">Pedidos</button>
             </li>
             <li>
-                <button id="btnVerPedidos">Pedidos</button>
+                <button id="btnVerCategorias">Categorías</button>
             </li>
         </ul>
     </aside>
@@ -37,7 +37,10 @@
 
         <!-- SECCIÓN: Tabla de productos -->
         <section id="seccionTabla">
-            <h2>Gestión de Productos</h2>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h2>Gestión de Productos</h2>
+                <button id="btnVerFormulario" class="btn-guardar">+ Nuevo Producto</button>
+            </div>
             <p style="margin: 0.5rem 0 1.25rem; color:#888; font-size:0.88rem;">
                 Total: <strong id="totalProductos">0</strong> productos registrados
             </p>
@@ -66,7 +69,7 @@
             <br>
             <form id="formProducto">
                 <fieldset class="form-fieldset">
-                    <legend>Datos del Producto</legend>
+                    <h3 class="fieldset-titulo">Datos del Producto</h3>
 
                     <div class="form-grupo">
                         <label for="inputNombre">Nombre del Producto:</label>
@@ -209,6 +212,49 @@
             </p>
 
             <div id="pedidosAdminContenido"></div>
+        </section>
+
+        <!-- SECCIÓN: Gestión de categorías -->
+        <section id="seccionCategorias" style="display:none;">
+            <h2>Gestión de Categorías</h2>
+            <p style="margin: 0.5rem 0 1.25rem; color:#888; font-size:0.88rem;">
+                Total: <strong id="totalCategorias">0</strong> categorías registradas
+            </p>
+
+            <div class="tabla-wrapper" style="margin-bottom: 1.5rem;">
+                <table id="tablaCategorias">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyCategorias"></tbody>
+                </table>
+            </div>
+
+            <fieldset class="form-fieldset">
+                <h3 class="fieldset-titulo" id="legendCategoria">Nueva Categoría</h3>
+                <form id="formCategoria">
+                    <input type="hidden" id="categoriaId" />
+                    <div class="form-grupo">
+                        <label for="catNombre">Nombre:</label>
+                        <input id="catNombre" type="text" name="nombre" required />
+                    </div>
+                    <div class="form-grupo">
+                        <label for="catDescripcion">Descripción:</label>
+                        <textarea id="catDescripcion" name="descripcion" rows="2" required></textarea>
+                    </div>
+                    <div class="form-acciones">
+                        <button type="submit" class="btn-guardar">Guardar</button>
+                        <button type="button" class="btn-reset" id="btnCancelarCategoria">Cancelar</button>
+                    </div>
+                </form>
+            </fieldset>
+
+            <p id="mensajeCategoria" class="mensaje-form"></p>
         </section>
 
     </main>

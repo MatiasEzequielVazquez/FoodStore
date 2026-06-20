@@ -1,7 +1,7 @@
 import { protegerRuta, cerrarSesion } from "../../../utils/auth";
 import { getUSer } from "../../../utils/localStorage";
 import type { IUser } from "../../../types/IUser";
-import { deleteProduct, getProducts, getCategories, getProductById, createProduct, updateProduct, getAllOrders, updateOrderStatus } from "../../../utils/api";import type { ICategoriaDto, IProductoDto } from "../../../types/IBackendDtos";
+import { deleteProduct, getProducts, getCategories, getProductById, createProduct, updateProduct, getAllOrders, updateOrderStatus, createCategory, updateCategory, deleteCategory } from "../../../utils/api";import type { ICategoriaDto, IProductoDto } from "../../../types/IBackendDtos";
 import type { IPedidoDto } from "../../../types/IBackendDtos";
 
 // Guard: solo admin puede acceder
@@ -28,6 +28,17 @@ const btnVerPedidos = document.querySelector<HTMLButtonElement>("#btnVerPedidos"
 const seccionPedidos = document.querySelector<HTMLElement>("#seccionPedidos");
 const pedidosAdminContenido = document.querySelector<HTMLDivElement>("#pedidosAdminContenido");
 const totalPedidos = document.querySelector<HTMLSpanElement>("#totalPedidos");
+const btnVerCategorias = document.querySelector<HTMLButtonElement>("#btnVerCategorias");
+const seccionCategorias = document.querySelector<HTMLElement>("#seccionCategorias");
+const tbodyCategorias = document.querySelector<HTMLTableSectionElement>("#tbodyCategorias");
+const totalCategorias = document.querySelector<HTMLSpanElement>("#totalCategorias");
+const formCategoria = document.querySelector<HTMLFormElement>("#formCategoria");
+const categoriaId = document.querySelector<HTMLInputElement>("#categoriaId");
+const catNombre = document.querySelector<HTMLInputElement>("#catNombre");
+const catDescripcion = document.querySelector<HTMLTextAreaElement>("#catDescripcion");
+const legendCategoria = document.querySelector<HTMLElement>("#legendCategoria");
+const mensajeCategoria = document.querySelector<HTMLParagraphElement>("#mensajeCategoria");
+const btnCancelarCategoria = document.querySelector<HTMLButtonElement>("#btnCancelarCategoria");
 
 // Campos del formulario de edición
 const editId = document.querySelector<HTMLInputElement>("#editId");
@@ -50,15 +61,17 @@ btnCerrarSesion?.addEventListener("click", (): void => {
 });
 
 // ── Helper: muestra solo una sección y actualiza botones activos ──
-const mostrarSeccion = (seccion: "tabla" | "formulario" | "edicion" | "pedidos"): void => {
+const mostrarSeccion = (seccion: "tabla" | "formulario" | "edicion" | "pedidos" | "categorias"): void => {
     if (seccionTabla) seccionTabla.style.display = seccion === "tabla" ? "block" : "none";
     if (seccionFormulario) seccionFormulario.style.display = seccion === "formulario" ? "block" : "none";
     if (seccionEdicion) seccionEdicion.style.display = seccion === "edicion" ? "block" : "none";
     if (seccionPedidos) seccionPedidos.style.display = seccion === "pedidos" ? "block" : "none";
+    if (seccionCategorias) seccionCategorias.style.display = seccion === "categorias" ? "block" : "none";
 
     btnVerProductos?.classList.toggle("activo", seccion === "tabla");
     btnVerFormulario?.classList.toggle("activo", seccion === "formulario");
     btnVerPedidos?.classList.toggle("activo", seccion === "pedidos");
+    btnVerCategorias?.classList.toggle("activo", seccion === "categorias");
 };
 
 // ── Navegación entre secciones ──
@@ -76,9 +89,21 @@ btnVerPedidos?.addEventListener("click", async (): Promise<void> => {
     await renderPedidosAdmin();
 });
 
+btnVerCategorias?.addEventListener("click", async (): Promise<void> => {
+    mostrarSeccion("categorias");
+    await renderTablaCategorias();
+});
+
 btnCancelarEdicion?.addEventListener("click", async (): Promise<void> => {
     mostrarSeccion("tabla");
     await renderTabla();
+});
+
+btnCancelarCategoria?.addEventListener("click", (): void => {
+    formCategoria?.reset();
+    if (categoriaId) categoriaId.value = "";
+    if (legendCategoria) legendCategoria.textContent = "Nueva Categoría";
+    if (mensajeCategoria) mensajeCategoria.textContent = "";
 });
 
 // ── Cargar categorías en ambos selects ──
@@ -282,6 +307,111 @@ const renderPedidosAdmin = async (): Promise<void> => {
         pedidosAdminContenido.appendChild(div);
     });
 };
+
+// ── Renderizar tabla de categorías ──
+const renderTablaCategorias = async (): Promise<void> => {
+    if (!tbodyCategorias) return;
+
+    const categorias: ICategoriaDto[] = await getCategories();
+    tbodyCategorias.innerHTML = "";
+
+    if (totalCategorias) {
+        totalCategorias.textContent = categorias.length.toString();
+    }
+
+    categorias.forEach((cat: ICategoriaDto): void => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${cat.id}</td>
+            <td>${cat.nombre}</td>
+            <td>${cat.descripcion}</td>
+            <td>
+                <button class="btn-editar" data-id="${cat.id}">Editar</button>
+                <button class="btn-eliminar" data-id="${cat.id}">Eliminar</button>
+            </td>
+        `;
+
+        tr.querySelector<HTMLButtonElement>(".btn-editar")
+            ?.addEventListener("click", (): void => {
+                abrirEdicionCategoria(cat);
+            });
+
+        tr.querySelector<HTMLButtonElement>(".btn-eliminar")
+            ?.addEventListener("click", (): void => {
+                eliminarCategoria(cat.id);
+            });
+
+        tbodyCategorias.appendChild(tr);
+    });
+};
+
+// ── Abrir formulario de edición de categoría pre-cargado ──
+const abrirEdicionCategoria = (cat: ICategoriaDto): void => {
+    if (categoriaId) categoriaId.value = cat.id.toString();
+    if (catNombre) catNombre.value = cat.nombre;
+    if (catDescripcion) catDescripcion.value = cat.descripcion;
+    if (legendCategoria) legendCategoria.textContent = "Editar Categoría";
+    if (mensajeCategoria) mensajeCategoria.textContent = "";
+};
+// ── Eliminar categoría ──
+const eliminarCategoria = async (id: number): Promise<void> => {
+    const confirmado: boolean = confirm("¿Estás seguro de que querés eliminar esta categoría?");
+    if (!confirmado) return;
+
+    try {
+        await deleteCategory(id);
+        await renderTablaCategorias();
+    } catch (error) {
+        alert("No se pudo eliminar la categoría.");
+    }
+};
+
+// ── Guardar cambios de edición o crear nueva categoría ──
+formCategoria?.addEventListener("submit", async (event: Event): Promise<void> => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget as HTMLFormElement);
+
+    const id: string = categoriaId?.value ?? "";
+    const nombre: string = formData.get("nombre") as string;
+    const descripcion: string = formData.get("descripcion") as string;
+
+    try {
+        if (id) {
+            // Modo edición
+            await updateCategory(parseInt(id), { nombre, descripcion });
+            if (mensajeCategoria) {
+                mensajeCategoria.textContent = `Categoría "${nombre}" actualizada correctamente.`;
+                mensajeCategoria.className = "mensaje-form exito";
+            }
+        } else {
+            // Modo creación
+            await createCategory({ nombre, descripcion });
+            if (mensajeCategoria) {
+                mensajeCategoria.textContent = `Categoría "${nombre}" creada correctamente.`;
+                mensajeCategoria.className = "mensaje-form exito";
+            }
+        }
+
+        formCategoria.reset();
+        if (categoriaId) categoriaId.value = "";
+        if (legendCategoria) legendCategoria.textContent = "Nueva Categoría";
+
+        setTimeout(async (): Promise<void> => {
+            if (mensajeCategoria) mensajeCategoria.textContent = "";
+            if (selectCategoria) selectCategoria.innerHTML = '<option value="">Seleccione una categoría</option>';
+            if (selectEditCategoria) selectEditCategoria.innerHTML = '<option value="">Seleccione una categoría</option>';
+            await cargarCategorias();
+            await renderTablaCategorias();
+        }, 1500);
+    } catch (error) {
+        if (mensajeCategoria) {
+            mensajeCategoria.textContent = "No se pudo guardar la categoría.";
+            mensajeCategoria.className = "mensaje-form error";
+        }
+    }
+});
 
 // ── Agregar nuevo producto ──
 formProducto?.addEventListener("submit", async (event: Event): Promise<void> => {

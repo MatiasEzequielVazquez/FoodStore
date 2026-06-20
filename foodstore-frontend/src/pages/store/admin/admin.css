@@ -6,36 +6,42 @@
     background: var(--color-blanco);
 }
 
-#tablaProductos {
+#tablaProductos,
+#tablaCategorias {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.88rem;
 }
 
-#tablaProductos thead {
+#tablaProductos thead,
+#tablaCategorias thead {
     background: var(--color-primario);
     color: white;
 }
 
-#tablaProductos th {
+#tablaProductos th,
+#tablaCategorias th {
     padding: 0.75rem 1rem;
     text-align: left;
     font-weight: 600;
     letter-spacing: 0.5px;
 }
 
-#tablaProductos td {
+#tablaProductos td,
+#tablaCategorias td {
     padding: 0.7rem 1rem;
     border-bottom: 1px solid var(--color-borde);
     color: var(--color-texto);
     vertical-align: middle;
 }
 
-#tablaProductos tbody tr:last-child td {
+#tablaProductos tbody tr:last-child td,
+#tablaCategorias tbody tr:last-child td {
     border-bottom: none;
 }
 
-#tablaProductos tbody tr:hover {
+#tablaProductos tbody tr:hover,
+#tablaCategorias tbody tr:hover {
     background: #fafafa;
 }
 
@@ -100,11 +106,13 @@
     max-width: 560px;
 }
 
-.form-fieldset legend {
+.fieldset-titulo {
     font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--color-texto-muted);
-    padding: 0 0.5rem;
+    font-size: 0.95rem;
+    color: var(--color-texto);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-borde);
 }
 
 .form-grupo {

@@ -141,3 +141,36 @@ export const updateOrderStatus = async (id: number, estado: string) => {
   }
   return response.json();
 };
+
+export const createCategory = async (data: { nombre: string; descripcion: string }) => {
+  const response = await fetch(`${API_URL}/categorias`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    throw new Error("No se pudo registrar la categoría");
+  }
+  return response.json();
+};
+
+export const updateCategory = async (id: number, data: { nombre: string; descripcion: string }) => {
+  const response = await fetch(`${API_URL}/categorias/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    throw new Error("No se pudo actualizar la categoría");
+  }
+  return response.json();
+};
+
+export const deleteCategory = async (id: number) => {
+  const response = await fetch(`${API_URL}/categorias/${id}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) {
+    throw new Error("No se pudo eliminar la categoría");
+  }
+};
