@@ -1,63 +1,96 @@
 # Food Store
 
-Aplicación frontend desarrollada como proyecto integrador de **Programación III** (UTN).
+**Trabajo Práctico Integrador — Programación III**
+Tecnicatura Universitaria en Programación a Distancia — UTN
+
+Sistema de gestión de pedidos de comida (e-commerce) desarrollado como aplicación full stack, compuesto por un backend en Spring Boot y un frontend en TypeScript + Vite.
 
 ## Descripción
 
-Food Store es un e-commerce de comida que incluye:
-- Sistema de autenticación con registro y login (localStorage)
-- Protección de rutas por rol (admin / client)
-- Catálogo de productos con búsqueda y filtrado por categoría
-- Carrito de compras con persistencia en localStorage
+Food Store permite a los usuarios registrarse, navegar un catálogo de productos organizados por categorías, gestionar un carrito de compras y confirmar pedidos, además de consultar su historial. Los administradores cuentan con un panel propio para gestionar categorías, productos y el estado de los pedidos.
+
+## Estructura del repositorio
+
+Este es un monorepo compuesto por dos proyectos independientes:
+
+```
+TPI-FoodStore/
+├── foodstore-backend/     # API REST en Spring Boot
+└── foodstore-frontend/    # Aplicación web en TypeScript + Vite
+```
 
 ## Tecnologías
 
-- HTML5 + CSS3
-- TypeScript
-- Vite (bundler)
+**Backend**
+- Java 21
+- Spring Boot 3.4.x
+- Spring Data JPA / Hibernate
+- H2 Database (en memoria)
+- Lombok
+- Spring Security Crypto (BCrypt)
+- SpringDoc OpenAPI (Swagger)
+- Gradle
 
-## Cómo ejecutarlo
+**Frontend**
+- TypeScript
+- Vite
+- HTML5 + CSS3
+- Vanilla JS (sin frameworks)
+
+## Cómo ejecutar el proyecto
+
+El proyecto requiere levantar **dos servidores en paralelo**: el backend y el frontend.
+
+### 1. Backend (Spring Boot)
+
+**Requisitos:** Java 21, Gradle (o usar el wrapper incluido).
 
 ```bash
-# 1. Instalar dependencias
-pnpm install
+cd foodstore-backend
+./gradlew bootRun
+```
 
-# 2. Levantar el servidor de desarrollo
+El backend va a quedar disponible en `http://localhost:8080`.
+
+> La base de datos H2 es en memoria y se recrea en cada arranque (`ddl-auto=create-drop`). Al iniciar, el sistema carga automáticamente:
+> - Un usuario administrador por defecto
+> - Un set inicial de categorías y productos de ejemplo
+
+**Documentación interactiva de la API (Swagger):**
+`http://localhost:8080/swagger-ui/index.html`
+
+### 2. Frontend (Vite)
+
+**Requisitos:** Node.js, pnpm (o npm/yarn).
+
+```bash
+cd foodstore-frontend
+pnpm install
 pnpm dev
 ```
 
-El servidor estará disponible en `http://localhost:5173`.
+El frontend va a quedar disponible en `http://localhost:5173`.
+
+> El frontend espera que el backend esté corriendo en `http://localhost:8080/api`. Es necesario levantar el backend antes de usar la aplicación.
 
 ## Credenciales de prueba
 
-| Rol    | Email                    | Contraseña |
-|--------|--------------------------|------------|
-| Admin  | admin@foodstore.com      | admin1234  |
-| Client | Registrarse en /registro | (libre)    |
+| Rol      | Email                  | Contraseña  |
+|----------|-------------------------|-------------|
+| Admin    | admin@foodstore.com     | admin1234   |
+| Cliente  | Registrarse desde `/registro` | (a elección) |
 
-## Estructura del proyecto
+## Flujos principales
 
-```
-src/
-├── data/
-│   └── data.ts
-├── pages/
-│   ├── auth/login/
-│   ├── auth/registro/
-│   ├── admin/home/
-│   ├── client/home/
-│   └── store/
-│       ├── store.css  ← styles  
-│       ├── admin/    ← admin
-│       ├── home/    ← catálogo
-│       └── cart/    ← carrito
-├── types/
-│   ├── IUser.ts 
-│   ├── Rol.ts
-│   ├── product.ts
-│   └── category.ts
-└── utils/
-    ├── auth.ts
-    ├── localStorage.ts
-    └── navigate.ts
-```
+**Cliente:** registro → login → navegar catálogo → agregar productos al carrito → confirmar pedido → consultar historial en "Mis Pedidos".
+
+**Administrador:** login → gestión de categorías (CRUD) → gestión de productos (CRUD) → gestión de pedidos (cambio de estado).
+
+## Documentación y video
+
+- Documentación técnica y académica (PDF): *Pendiente*
+- Video demostrativo: *Pendiente*
+
+## Autor
+
+Matías Ezequiel Vazquez — Tecnicatura Universitaria en Programación (UTN)
