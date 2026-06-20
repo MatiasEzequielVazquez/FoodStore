@@ -74,3 +74,48 @@ export const getOrdersByUser = async (userId: number) => {
   }
   return response.json();
 };
+
+
+export const deleteProduct = async (id: number) => {
+  const response = await fetch(`${API_URL}/productos/${id}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) {
+    throw new Error("No se pudo eliminar el producto");
+  }
+};
+
+export const createProduct = async (data: { nombre: string; descripcion: string; precio: number; stock: number; imagen: string; disponible: boolean; idCategoria: number }) => {
+  const response = await fetch(`${API_URL}/productos`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    throw new Error("No se pudo registrar el producto");
+  }
+  return response.json();
+};
+
+
+export const updateProduct = async (id: number, data: { nombre: string; descripcion: string; precio: number; stock: number; imagen: string; disponible: boolean; idCategoria: number }) => {
+  const response = await fetch(`${API_URL}/productos/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    throw new Error("No se pudo actualizar el producto");
+  }
+  return response.json();
+};
+
+export const getProductById = async (id: number) => {
+  const response = await fetch(`${API_URL}/productos/${id}`, {
+    method: "GET",
+  });
+  if (!response.ok) {
+    throw new Error("No se pudo obtener el producto");
+  }
+  return response.json();
+};

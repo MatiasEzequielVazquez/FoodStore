@@ -1,9 +1,9 @@
-import { getCategories } from "../../../data/data";
-import type { Product } from "../../../types/product";
-import type { ICategory } from "../../../types/category";
+
 import { protegerRuta, cerrarSesion } from "../../../utils/auth";
-import { getUSer, getProductos, saveProductos } from "../../../utils/localStorage";
+import { getUSer } from "../../../utils/localStorage";
 import type { IUser } from "../../../types/IUser";
+import { deleteProduct, getProducts, getCategories, getProductById, createProduct, updateProduct} from "../../../utils/api";
+import type { ICategoriaDto, IProductoDto } from "../../../types/IBackendDtos";
 
 // Guard: solo admin puede acceder
 protegerRuta("admin");
@@ -31,6 +31,7 @@ const editId = document.querySelector<HTMLInputElement>("#editId");
 const editNombre = document.querySelector<HTMLInputElement>("#editNombre");
 const editPrecio = document.querySelector<HTMLInputElement>("#editPrecio");
 const editStock = document.querySelector<HTMLInputElement>("#editStock");
+const editImagen = document.querySelector<HTMLInputElement>("#editImagen");
 const editDescripcion = document.querySelector<HTMLTextAreaElement>("#editDescripcion");
 
 // ── Muestra el email del admin logueado ──
@@ -56,32 +57,30 @@ const mostrarSeccion = (seccion: "tabla" | "formulario" | "edicion"): void => {
 };
 
 // ── Navegación entre secciones ──
-btnVerProductos?.addEventListener("click", (): void => {
+btnVerProductos?.addEventListener("click", async (): Promise<void> => {
     mostrarSeccion("tabla");
-    renderTabla();
+    await renderTabla();
 });
 
 btnVerFormulario?.addEventListener("click", (): void => {
     mostrarSeccion("formulario");
 });
 
-btnCancelarEdicion?.addEventListener("click", (): void => {
+btnCancelarEdicion?.addEventListener("click", async (): Promise<void> => {
     mostrarSeccion("tabla");
-    renderTabla();
+    await renderTabla();
 });
 
 // ── Cargar categorías en ambos selects ──
-const cargarCategorias = (): void => {
-    const categorias: ICategory[] = getCategories();
+const cargarCategorias = async (): Promise<void> => {
+    const categorias: ICategoriaDto[] = await getCategories();
 
-    categorias.forEach((cat: ICategory): void => {
-        // Select del formulario de agregar
+    categorias.forEach((cat: ICategoriaDto): void => {
         const opt1 = document.createElement("option");
         opt1.value = cat.id.toString();
         opt1.textContent = cat.nombre;
         selectCategoria?.appendChild(opt1);
 
-        // Select del formulario de editar
         const opt2 = document.createElement("option");
         opt2.value = cat.id.toString();
         opt2.textContent = cat.nombre;
@@ -90,32 +89,30 @@ const cargarCategorias = (): void => {
 };
 
 // ── Eliminar producto ──
-const eliminarProducto = (id: number): void => {
+const eliminarProducto = async (id: number): Promise<void> => {
     const confirmado: boolean = confirm("¿Estás seguro de que querés eliminar este producto?");
     if (!confirmado) return;
 
-    const productos: Product[] = getProductos();
-    const actualizados: Product[] = productos.filter((p: Product) => p.id !== id);
-    saveProductos(actualizados);
-    renderTabla();
+    try {
+        await deleteProduct(id);
+        await renderTabla();
+    } catch (error) {
+        alert("No se pudo eliminar el producto.");
+    }
 };
 
 // ── Abrir formulario de edición pre-cargado ──
-const abrirEdicion = (id: number): void => {
-    const productos: Product[] = getProductos();
-    const producto: Product | undefined = productos.find((p: Product) => p.id === id);
+const abrirEdicion = async (id: number): Promise<void> => {
+    const producto: IProductoDto = await getProductById(id);
 
-    if (!producto) return;
-
-    // Pre-cargar los campos con los valores actuales
     if (editId) editId.value = producto.id.toString();
     if (editNombre) editNombre.value = producto.nombre;
     if (editPrecio) editPrecio.value = producto.precio.toString();
     if (editStock) editStock.value = producto.stock.toString();
+    if (editImagen) editImagen.value = producto.imagen;
     if (editDescripcion) editDescripcion.value = producto.descripcion;
 
-    // Seleccionar la categoría actual en el select
-    const categoriaActualId: number = producto.categorias[0]?.id ?? 0;
+    const categoriaActualId: number = producto.categoria?.id ?? 0;
     if (selectEditCategoria) {
         selectEditCategoria.value = categoriaActualId.toString();
     }
@@ -126,7 +123,7 @@ const abrirEdicion = (id: number): void => {
 };
 
 // ── Guardar cambios de edición ──
-formEdicion?.addEventListener("submit", (event: Event): void => {
+formEdicion?.addEventListener("submit", async (event: Event): Promise<void> => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget as HTMLFormElement);
@@ -135,68 +132,53 @@ formEdicion?.addEventListener("submit", (event: Event): void => {
     const nombre: string = formData.get("nombre") as string;
     const precio: number = parseFloat(formData.get("precio") as string);
     const stock: number = parseInt(formData.get("stock") as string);
-    const categoriaId: number = parseInt(formData.get("categoria") as string);
+    const imagen: string = formData.get("imagen") as string;
+    const idCategoria: number = parseInt(formData.get("categoria") as string);
     const descripcion: string = formData.get("descripcion") as string;
 
-    const categorias: ICategory[] = getCategories();
-    const categoriaSeleccionada: ICategory | undefined = categorias.find(
-        (c: ICategory) => c.id === categoriaId
-    );
+    try {
+        await updateProduct(id, {
+            nombre,
+            descripcion,
+            precio,
+            stock,
+            imagen: imagen,
+            disponible: stock > 0,
+            idCategoria,
+        });
 
-    if (!categoriaSeleccionada) {
         if (mensajeEdicion) {
-            mensajeEdicion.textContent = "Seleccioná una categoría válida.";
+            mensajeEdicion.textContent = `Producto "${nombre}" actualizado correctamente.`;
+            mensajeEdicion.className = "mensaje-form exito";
+        }
+
+        setTimeout(async (): Promise<void> => {
+            if (mensajeEdicion) mensajeEdicion.textContent = "";
+            mostrarSeccion("tabla");
+            await renderTabla();
+        }, 1500);
+    } catch (error) {
+        if (mensajeEdicion) {
+            mensajeEdicion.textContent = "No se pudo actualizar el producto.";
             mensajeEdicion.className = "mensaje-form error";
         }
-        return;
     }
-
-    const productos: Product[] = getProductos();
-
-    // Busca el índice del producto a editar
-    const indice: number = productos.findIndex((p: Product) => p.id === id);
-
-    if (indice === -1) return;
-
-    // Actualiza el producto manteniendo los campos que no se editan
-    productos[indice] = {
-        ...productos[indice],
-        nombre: nombre,
-        precio: precio,
-        stock: stock,
-        descripcion: descripcion,
-        disponible: stock > 0,
-        categorias: [categoriaSeleccionada]
-    };
-
-    saveProductos(productos);
-
-    if (mensajeEdicion) {
-        mensajeEdicion.textContent = `Producto "${nombre}" actualizado correctamente.`;
-        mensajeEdicion.className = "mensaje-form exito";
-    }
-
-    setTimeout((): void => {
-        if (mensajeEdicion) mensajeEdicion.textContent = "";
-        mostrarSeccion("tabla");
-        renderTabla();
-    }, 1500);
 });
 
 // ── Renderizar la tabla ──
-const renderTabla = (): void => {
+const renderTabla = async (): Promise<void> => {
     if (!tbodyProductos) return;
 
-    const productos: Product[] = getProductos();
+    const productos: IProductoDto[] = await getProducts();
     tbodyProductos.innerHTML = "";
 
     if (totalProductos) {
         totalProductos.textContent = productos.length.toString();
     }
 
-    productos.forEach((producto: Product): void => {
+    productos.forEach((producto: IProductoDto): void => {
         const tr = document.createElement("tr");
-        const categoria: string = producto.categorias[0]?.nombre ?? "—";
+        const categoria: string = producto.categoria?.nombre ?? "—";
 
         tr.innerHTML = `
             <td>${producto.id}</td>
@@ -230,7 +212,7 @@ const renderTabla = (): void => {
 };
 
 // ── Agregar nuevo producto ──
-formProducto?.addEventListener("submit", (event: Event): void => {
+formProducto?.addEventListener("submit", async (event: Event): Promise<void> => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget as HTMLFormElement);
@@ -238,55 +220,45 @@ formProducto?.addEventListener("submit", (event: Event): void => {
     const nombre: string = formData.get("nombre") as string;
     const precio: number = parseFloat(formData.get("precio") as string);
     const stock: number = parseInt(formData.get("stock") as string);
-    const categoriaId: number = parseInt(formData.get("categoria") as string);
+    const imagen: string = formData.get("imagen") as string;
+    const idCategoria: number = parseInt(formData.get("categoria") as string);
     const descripcion: string = formData.get("descripcion") as string;
 
-    const categorias: ICategory[] = getCategories();
-    const categoriaSeleccionada: ICategory | undefined = categorias.find(
-        (c: ICategory) => c.id === categoriaId
-    );
+    try {
+        await createProduct({
+            nombre,
+            descripcion,
+            precio,
+            stock,
+            imagen: imagen,
+            disponible: stock > 0,
+            idCategoria,
+        });
 
-    if (!categoriaSeleccionada) {
         if (mensajeFormulario) {
-            mensajeFormulario.textContent = "Seleccioná una categoría válida.";
+            mensajeFormulario.textContent = `Producto "${nombre}" agregado correctamente.`;
+            mensajeFormulario.className = "mensaje-form exito";
+        }
+
+        formProducto.reset();
+
+        setTimeout(async (): Promise<void> => {
+            if (mensajeFormulario) mensajeFormulario.textContent = "";
+            mostrarSeccion("tabla");
+            await renderTabla();
+        }, 1500);
+    } catch (error) {
+        if (mensajeFormulario) {
+            mensajeFormulario.textContent = "No se pudo agregar el producto.";
             mensajeFormulario.className = "mensaje-form error";
         }
-        return;
     }
-
-    const productos: Product[] = getProductos();
-    const nuevoId: number = Math.max(...productos.map((p: Product) => p.id)) + 1;
-
-    const nuevoProducto: Product = {
-        id: nuevoId,
-        eliminado: false,
-        createdAt: new Date().toISOString(),
-        nombre: nombre,
-        precio: precio,
-        descripcion: descripcion,
-        stock: stock,
-        imagen: "pizza.jpg",
-        disponible: stock > 0,
-        categorias: [categoriaSeleccionada]
-    };
-
-    productos.push(nuevoProducto);
-    saveProductos(productos);
-
-    if (mensajeFormulario) {
-        mensajeFormulario.textContent = `Producto "${nombre}" agregado correctamente.`;
-        mensajeFormulario.className = "mensaje-form exito";
-    }
-
-    formProducto.reset();
-
-    setTimeout((): void => {
-        if (mensajeFormulario) mensajeFormulario.textContent = "";
-        mostrarSeccion("tabla");
-        renderTabla();
-    }, 1500);
 });
 
 // ── Inicialización ──
-cargarCategorias();
-renderTabla();
+const init = async (): Promise<void> => {
+    await cargarCategorias();
+    await renderTabla();
+};
+
+init();
