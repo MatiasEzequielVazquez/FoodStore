@@ -34,7 +34,7 @@ public class ProductoServiceImpl implements ProductoService {
                 .disponible(dto.disponible())
                 .categoria(categoria)
                 .build();
-        productoRepository.save(producto);
+        producto = productoRepository.save(producto);
         CategoriaDto categoriaDto = new CategoriaDto(producto.getCategoria().getId(), producto.getCategoria().getNombre(), producto.getCategoria().getDescripcion());
         return new ProductoDto(producto.getId(), producto.getNombre(), producto.getDescripcion(), producto.getPrecio(), producto.getStock(), producto.getImagen(), producto.isDisponible(), categoriaDto);
     }

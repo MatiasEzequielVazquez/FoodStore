@@ -17,14 +17,14 @@ import java.util.List;
 public class CategoriaServiceImpl implements CategoriaService{
         private final CategoriaRepository categoriaRepository;
 
-        public CategoriaDto save(CategoriaCreate dto) {
-            Categoria categoria = Categoria.builder()
-                    .nombre(dto.nombre())
-                    .descripcion(dto.descripcion())
-                    .build();
-            categoriaRepository.save(categoria);
-            return new CategoriaDto(categoria.getId(), categoria.getNombre(), categoria.getDescripcion());
-        }
+    public CategoriaDto save(CategoriaCreate dto) {
+        Categoria categoria = Categoria.builder()
+                .nombre(dto.nombre())
+                .descripcion(dto.descripcion())
+                .build();
+        categoria = categoriaRepository.save(categoria);
+        return new CategoriaDto(categoria.getId(), categoria.getNombre(), categoria.getDescripcion());
+    }
 
         public List<CategoriaDto> findAll(){
             List<CategoriaDto> dtos = new ArrayList<>();

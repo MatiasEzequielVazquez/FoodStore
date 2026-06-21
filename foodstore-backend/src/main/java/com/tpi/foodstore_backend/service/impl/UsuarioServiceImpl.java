@@ -36,7 +36,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .password(passwordEncoder.encode(dto.password()))
                 .rol(Rol.USUARIO)
                 .build();
-        usuarioRepository.save(usuario);
+        usuario = usuarioRepository.save(usuario);
         return new UsuarioDto(usuario.getId(), usuario.getNombre(), usuario.getApellido(), usuario.getEmail(), usuario.getCelular(), usuario.getRol());
     }
 

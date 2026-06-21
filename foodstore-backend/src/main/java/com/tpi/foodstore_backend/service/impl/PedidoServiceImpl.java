@@ -63,35 +63,35 @@ public class PedidoServiceImpl implements PedidoService {
         }
         pedido.setTotal(total);
 
-        pedidoRepository.save(pedido);
+        pedido = pedidoRepository.save(pedido);
         return toDto(pedido);
     }
 
-    public List<PedidoDto> findAll(){
+    public List<PedidoDto> findAll() {
         List<PedidoDto> dtos = new ArrayList<>();
         List<Pedido> pedidos = pedidoRepository.findAll();
-        for (Pedido p : pedidos){
+        for (Pedido p : pedidos) {
             dtos.add(toDto(p));
         }
         return dtos;
     }
 
-    public PedidoDto findById(Long id){
+    public PedidoDto findById(Long id) {
         Pedido pedido = pedidoRepository.findByIdOrThrow(id);
         return toDto(pedido);
     }
 
-    public List<PedidoDto> findByUsuarioId(Long usuarioId){
+    public List<PedidoDto> findByUsuarioId(Long usuarioId) {
         usuarioRepository.findByIdOrThrow(usuarioId);
         List<Pedido> pedidos = pedidoRepository.findAllByUsuarioIdAndEliminadoFalse(usuarioId);
         List<PedidoDto> dtos = new ArrayList<>();
-        for (Pedido p : pedidos){
+        for (Pedido p : pedidos) {
             dtos.add(toDto(p));
         }
         return dtos;
     }
 
-    public PedidoDto update(Long id, PedidoEdit dto){
+    public PedidoDto update(Long id, PedidoEdit dto) {
         Pedido pedido = pedidoRepository.findByIdOrThrow(id);
         if (dto.estado() != null) pedido.setEstado(dto.estado());
         if (dto.formaPago() != null) pedido.setFormaPago(dto.formaPago());
@@ -99,7 +99,7 @@ public class PedidoServiceImpl implements PedidoService {
         return toDto(pedido);
     }
 
-    public void deleteById(Long id){
+    public void deleteById(Long id) {
         pedidoRepository.deleteById(id);
     }
 
