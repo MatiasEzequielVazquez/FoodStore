@@ -25,7 +25,7 @@ TPI-FoodStore/
 - Java 21
 - Spring Boot 3.4.x
 - Spring Data JPA / Hibernate
-- H2 Database (en memoria)
+- PostgreSQL (via Docker Compose)
 - Lombok
 - Spring Security Crypto (BCrypt)
 - SpringDoc OpenAPI (Swagger)
@@ -41,6 +41,17 @@ TPI-FoodStore/
 
 El proyecto requiere levantar **dos servidores en paralelo**: el backend y el frontend.
 
+### 0. Base de datos (PostgreSQL con Docker)
+
+**Requisitos:** Docker Desktop instalado y corriendo.
+
+```bash
+cd foodstore-backend
+docker-compose up -d
+```
+
+Esto levanta PostgreSQL en el puerto 5432. La base de datos se recrea automáticamente al iniciar el backend.
+
 ### 1. Backend (Spring Boot)
 
 **Requisitos:** Java 21, Gradle (o usar el wrapper incluido).
@@ -49,12 +60,14 @@ El proyecto requiere levantar **dos servidores en paralelo**: el backend y el fr
 cd foodstore-backend
 ./gradlew bootRun
 ```
+> En Windows usar `gradlew.bat bootRun`
 
 El backend va a quedar disponible en `http://localhost:8080`.
 
-> La base de datos H2 es en memoria y se recrea en cada arranque (`ddl-auto=create-drop`). Al iniciar, el sistema carga automáticamente:
+> La base de datos PostgreSQL se recrea en cada arranque (`ddl-auto=create-drop`). Al iniciar, el sistema carga automáticamente:
 > - Un usuario administrador por defecto
 > - Un set inicial de categorías y productos de ejemplo
+
 
 **Documentación interactiva de la API (Swagger):**
 `http://localhost:8080/swagger-ui/index.html`
@@ -82,9 +95,9 @@ El frontend va a quedar disponible en `http://localhost:5173`.
 
 ## Flujos principales
 
-**Cliente:** registro → login → navegar catálogo → agregar productos al carrito → confirmar pedido → consultar historial en "Mis Pedidos".
+**Cliente:** registro → login → navegar catálogo → agregar productos al carrito → confirmar pedido (con teléfono y forma de pago) → consultar historial en "Mis Pedidos".
 
-**Administrador:** login → gestión de categorías (CRUD) → gestión de productos (CRUD) → gestión de pedidos (cambio de estado).
+**Administrador:** login → dashboard con estadísticas → gestión de categorías (CRUD) → gestión de productos (CRUD) → gestión de pedidos (cambio de estado).
 
 ## Documentación y video
 
