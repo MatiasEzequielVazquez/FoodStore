@@ -1,6 +1,6 @@
 import type { CartItem } from "../../../types/product";
 import { protegerRuta, cerrarSesion } from "../../../utils/auth";
-import { createOrder } from "../../../utils/api";
+import { createOrder, updateUser } from "../../../utils/api";
 // Guard: solo usuarios autenticados
 protegerRuta("client");
 
@@ -148,7 +148,7 @@ const renderCarrito = (): void => {
     btnConfirmar.textContent = "Confirmar pedido";
     btnConfirmar.classList.add("btn-confirmar");
     btnConfirmar.style.marginTop = "1rem";
-    btnConfirmar.addEventListener("click", (): void => { confirmarPedido(); });
+    btnConfirmar.addEventListener("click", (): void => { mostrarModalCheckout(); });
     carritoContenido.appendChild(btnConfirmar);
 
     mensajeEl = document.createElement("p");
@@ -156,41 +156,108 @@ const renderCarrito = (): void => {
     carritoContenido.appendChild(mensajeEl);
 };
 
-// Botón confirmar pedido
-const confirmarPedido = async (): Promise<void> => {
-    const carrito: CartItem[] = obtenerCarrito();
-    if (carrito.length === 0) return;
-
+// ── Mostrar modal de checkout ──
+const mostrarModalCheckout = (): void => {
     const userData = localStorage.getItem("userData");
     if (!userData) return;
     const usuario = JSON.parse(userData);
+    const carrito = obtenerCarrito();
+    const total = calcularTotal(carrito);
 
-    const detallePedido = carrito.map((item: CartItem) => ({
-        idProducto: item.id,
-        cantidad: item.cantidad,
-    }));
+    const overlay = document.createElement("div");
+    overlay.id = "modalOverlay";
 
-    try {
-        await createOrder({
-            estado: "PENDIENTE",
-            formaPago: "EFECTIVO",
-            idUsuario: usuario.id,
-            detallePedido,
-        });
-        localStorage.removeItem("carrito");
-        if (mensajeEl) {
-            mensajeEl.textContent = "¡Pedido confirmado con éxito!";
-            mensajeEl.style.color = "green";
+    const modal = document.createElement("div");
+    modal.classList.add("modal-checkout");
+
+    const titulo = document.createElement("h2");
+    titulo.textContent = "Completar pedido";
+    modal.appendChild(titulo);
+
+    const inputTelefono = document.createElement("input");
+    inputTelefono.type = "tel";
+    inputTelefono.placeholder = "Teléfono de contacto";
+    inputTelefono.value = usuario.celular || "";
+
+    const selectPago = document.createElement("select");
+    const opcionesPago = ["EFECTIVO", "TARJETA", "TRANSFERENCIA"];
+    opcionesPago.forEach((opcion: string): void => {
+        const optionEl = document.createElement("option");
+        optionEl.value = opcion;
+        optionEl.textContent = opcion;
+        selectPago.appendChild(optionEl);
+    });
+
+    const totalEl = document.createElement("p");
+    totalEl.textContent = `Total a pagar: $${total.toLocaleString("es-AR")}`;
+    totalEl.style.fontWeight = "bold";
+
+    const errorEl = document.createElement("p");
+    errorEl.style.color = "red";
+
+    const btnConfirmarModal = document.createElement("button");
+    btnConfirmarModal.textContent = "Confirmar Pedido";
+    btnConfirmarModal.classList.add("btn-confirmar-modal");
+    btnConfirmarModal.addEventListener("click", async (): Promise<void> => {
+        const telefono = inputTelefono.value.trim();
+        const formaPago = selectPago.value;
+
+        if (!telefono) {
+            errorEl.textContent = "El teléfono es obligatorio para confirmar el pedido.";
+            return;
         }
-        setTimeout((): void => {
+
+        if (usuario.celular && telefono !== usuario.celular) {
+            const confirmCambio = confirm("El teléfono ingresado es diferente al registrado en tu perfil. ¿Querés actualizarlo?");
+            if (!confirmCambio) {
+                errorEl.textContent = "Cancelaste la actualización del teléfono. Podés modificarlo o usar el número registrado.";
+                return;
+            }
+        }
+
+        if (telefono !== (usuario.celular ?? "")) {
+            await updateUser(usuario.id, { celular: telefono });
+            localStorage.setItem("userData", JSON.stringify({ ...usuario, celular: telefono }));
+        }
+
+        try {
+            const detallePedido = carrito.map((item: CartItem) => ({
+                idProducto: item.id,
+                cantidad: item.cantidad,
+            }));
+
+            await createOrder({
+                estado: "PENDIENTE",
+                formaPago,
+                idUsuario: usuario.id,
+                detallePedido,
+            });
+
+            localStorage.removeItem("carrito");
+            modalRoot.removeChild(overlay);
             window.location.href = "../home/home.html";
-        }, 1500);
-    } catch (error) {
-        if (mensajeEl) {
-            mensajeEl.textContent = "No se pudo confirmar el pedido. Verificá el stock disponible.";
-            mensajeEl.style.color = "red";
+        } catch (error) {
+            errorEl.textContent = "Hubo un error al confirmar el pedido. Por favor, intentá nuevamente.";
         }
-    }
+    });
+
+    const btnCancelar = document.createElement("button");
+    btnCancelar.textContent = "Cancelar";
+    btnCancelar.classList.add("btn-cancelar-modal");
+    btnCancelar.addEventListener("click", (): void => {
+        modalRoot.removeChild(overlay);
+    });
+
+    modal.appendChild(inputTelefono);
+    modal.appendChild(selectPago);
+    modal.appendChild(totalEl);
+    modal.appendChild(errorEl);
+    modal.appendChild(btnConfirmarModal);
+    modal.appendChild(btnCancelar);
+    overlay.appendChild(modal);
+    const modalRoot = document.getElementById("modal-root")!;
+    modalRoot.appendChild(overlay);
+
 };
 
 // ── Inicialización ──

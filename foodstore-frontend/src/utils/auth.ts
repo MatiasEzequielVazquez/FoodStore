@@ -1,6 +1,6 @@
 import type { IUser } from "../types/IUser";
 import type { Rol } from "../types/Rol";
-import { getUSer, removeUser } from "./localStorage";
+import { getUser, removeUser } from "./localStorage";
 import { navigate } from "./navigate";
 
 export const checkAuhtUser = (
@@ -8,7 +8,7 @@ export const checkAuhtUser = (
   redireccion2: string,
   rol: Rol
 ) => {
-  const user = getUSer();
+  const user = getUser();
 
   if (!user) {
     navigate(redireccion1);
@@ -30,7 +30,7 @@ export const logout = () => {
 // Alias para el store: protege una ruta según el rol requerido
 // Si no hay sesión > login. Si el rol no coincide > redirecciona.
 export const protegerRuta = (rolRequerido: Rol): void => {
-  const datos: string | null = getUSer();
+  const datos: string | null = getUser();
 
   if (!datos) {
     navigate("/src/pages/auth/login/login.html");

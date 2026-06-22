@@ -1,5 +1,5 @@
 import { protegerRuta, cerrarSesion } from "../../../utils/auth";
-import { getUSer } from "../../../utils/localStorage";
+import { getUser } from "../../../utils/localStorage";
 import type { IUser } from "../../../types/IUser";
 import { deleteProduct, getProducts, getCategories, getProductById, createProduct, updateProduct, getAllOrders, updateOrderStatus, createCategory, updateCategory, deleteCategory } from "../../../utils/api";import type { ICategoriaDto, IProductoDto } from "../../../types/IBackendDtos";
 import type { IPedidoDto } from "../../../types/IBackendDtos";
@@ -49,7 +49,7 @@ const editImagen = document.querySelector<HTMLInputElement>("#editImagen");
 const editDescripcion = document.querySelector<HTMLTextAreaElement>("#editDescripcion");
 
 // ── Muestra el email del admin logueado ──
-const sesionRaw: string | null = getUSer();
+const sesionRaw: string | null = getUser();
 if (sesionRaw && emailAdmin) {
     const sesion: IUser = JSON.parse(sesionRaw) as IUser;
     emailAdmin.textContent = sesion.email;

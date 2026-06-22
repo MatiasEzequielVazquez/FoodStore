@@ -5,5 +5,6 @@ export interface IUser {
   email: string;
   password: string;
   loggedIn: boolean;
+  celular?: string
   role: Rol;
 }

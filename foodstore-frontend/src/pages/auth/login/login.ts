@@ -21,6 +21,7 @@ form.addEventListener("submit", async (e: SubmitEvent): Promise<void> => {
       email: usuarioDto.email,
       password: "",
       loggedIn: true,
+      celular: usuarioDto.celular ?? "",
       role: usuarioDto.rol === "ADMIN" ? "admin" : "client",
     };
 

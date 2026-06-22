@@ -174,3 +174,15 @@ export const deleteCategory = async (id: number) => {
     throw new Error("No se pudo eliminar la categoría");
   }
 };
+
+export const updateUser = async (id: number, data: { celular?: string; nombre?: string; apellido?: string; email?: string }) => {
+  const response = await fetch(`${API_URL}/usuarios/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    throw new Error("No se pudo actualizar el usuario");
+  }
+  return response.json();
+};
