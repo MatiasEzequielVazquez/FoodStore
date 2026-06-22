@@ -22,6 +22,9 @@
         <h2>Panel Admin</h2>
         <ul id="listaCategorias">
             <li>
+                <button id="btnVerDashboard">Dashboard</button>
+            </li>
+            <li>
                 <button class="activo" id="btnVerProductos">Productos</button>
             </li>
             <li>
@@ -35,8 +38,45 @@
 
     <main>
 
+        <!-- SECCIÓN: Dashboard -->
+        <section id="seccionDashboard" style="display:none;">
+            <h2>Dashboard</h2>
+            <p style="color:#888; font-size:0.88rem; margin-bottom:1.5rem;">
+                Bienvenido al panel de administración de Food Store.
+            </p>
+
+            <!-- 4 tarjetas de estadísticas -->
+            <div id="dashboardTarjetas">
+                <div class="dashboard-card">
+                    <span class="dashboard-card-titulo">Categorías</span>
+                    <span class="dashboard-card-valor" id="dashTotalCategorias">...</span>
+                    <button class="btn-guardar" id="btnIrCategorias">Gestionar</button>
+                </div>
+                <div class="dashboard-card">
+                    <span class="dashboard-card-titulo">Productos</span>
+                    <span class="dashboard-card-valor" id="dashTotalProductos">...</span>
+                    <button class="btn-guardar" id="btnIrProductos">Gestionar</button>
+                </div>
+                <div class="dashboard-card">
+                    <span class="dashboard-card-titulo">Pedidos</span>
+                    <span class="dashboard-card-valor" id="dashTotalPedidos">...</span>
+                    <button class="btn-guardar" id="btnIrPedidos">Gestionar</button>
+                </div>
+                <div class="dashboard-card">
+                    <span class="dashboard-card-titulo">Disponibles</span>
+                    <span class="dashboard-card-valor" id="dashTotalDisponibles">...</span>
+                </div>
+            </div>
+
+            <!-- Panel resumen detallado -->
+            <div id="dashboardResumen">
+                <h3>Resumen Rápido</h3>
+                <div id="dashResumenContenido"></div>
+            </div>
+        </section>
+
         <!-- SECCIÓN: Tabla de productos -->
-        <section id="seccionTabla">
+        <section id="seccionTabla" style="display:none;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <h2>Gestión de Productos</h2>
                 <button id="btnVerFormulario" class="btn-guardar">+ Nuevo Producto</button>
@@ -62,6 +102,7 @@
                 </table>
             </div>
         </section>
+
 
         <!-- SECCIÓN: Formulario agregar producto -->
         <section id="seccionFormulario" style="display:none;">

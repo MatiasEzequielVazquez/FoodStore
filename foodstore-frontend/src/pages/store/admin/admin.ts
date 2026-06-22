@@ -39,6 +39,16 @@ const catDescripcion = document.querySelector<HTMLTextAreaElement>("#catDescripc
 const legendCategoria = document.querySelector<HTMLElement>("#legendCategoria");
 const mensajeCategoria = document.querySelector<HTMLParagraphElement>("#mensajeCategoria");
 const btnCancelarCategoria = document.querySelector<HTMLButtonElement>("#btnCancelarCategoria");
+const seccionDashboard = document.querySelector<HTMLElement>("#seccionDashboard");
+const btnVerDashboard = document.querySelector<HTMLButtonElement>("#btnVerDashboard");
+const dashTotalCategorias = document.querySelector<HTMLSpanElement>("#dashTotalCategorias");
+const dashTotalProductos = document.querySelector<HTMLSpanElement>("#dashTotalProductos");
+const dashTotalPedidos = document.querySelector<HTMLSpanElement>("#dashTotalPedidos");
+const dashTotalDisponibles = document.querySelector<HTMLSpanElement>("#dashTotalDisponibles");
+const dashResumenContenido = document.querySelector<HTMLDivElement>("#dashResumenContenido");
+const btnIrCategorias = document.querySelector<HTMLButtonElement>("#btnIrCategorias");
+const btnIrProductos = document.querySelector<HTMLButtonElement>("#btnIrProductos");
+const btnIrPedidos = document.querySelector<HTMLButtonElement>("#btnIrPedidos");
 
 // Campos del formulario de edición
 const editId = document.querySelector<HTMLInputElement>("#editId");
@@ -61,17 +71,19 @@ btnCerrarSesion?.addEventListener("click", (): void => {
 });
 
 // ── Helper: muestra solo una sección y actualiza botones activos ──
-const mostrarSeccion = (seccion: "tabla" | "formulario" | "edicion" | "pedidos" | "categorias"): void => {
+const mostrarSeccion = (seccion: "tabla" | "formulario" | "edicion" | "pedidos" | "categorias" | "dashboard"): void => {
     if (seccionTabla) seccionTabla.style.display = seccion === "tabla" ? "block" : "none";
     if (seccionFormulario) seccionFormulario.style.display = seccion === "formulario" ? "block" : "none";
     if (seccionEdicion) seccionEdicion.style.display = seccion === "edicion" ? "block" : "none";
     if (seccionPedidos) seccionPedidos.style.display = seccion === "pedidos" ? "block" : "none";
     if (seccionCategorias) seccionCategorias.style.display = seccion === "categorias" ? "block" : "none";
+    if (seccionDashboard) seccionDashboard.style.display = seccion === "dashboard" ? "block" : "none";
 
     btnVerProductos?.classList.toggle("activo", seccion === "tabla");
     btnVerFormulario?.classList.toggle("activo", seccion === "formulario");
     btnVerPedidos?.classList.toggle("activo", seccion === "pedidos");
     btnVerCategorias?.classList.toggle("activo", seccion === "categorias");
+    btnVerDashboard?.classList.toggle("activo", seccion === "dashboard");
 };
 
 // ── Navegación entre secciones ──
@@ -104,6 +116,26 @@ btnCancelarCategoria?.addEventListener("click", (): void => {
     if (categoriaId) categoriaId.value = "";
     if (legendCategoria) legendCategoria.textContent = "Nueva Categoría";
     if (mensajeCategoria) mensajeCategoria.textContent = "";
+});
+
+btnIrCategorias?.addEventListener("click", async (): Promise<void> => {
+    mostrarSeccion("categorias");
+    await renderTablaCategorias();
+});
+
+btnIrProductos?.addEventListener("click", async (): Promise<void> => {
+    mostrarSeccion("tabla");
+    await renderTabla();
+});
+
+btnIrPedidos?.addEventListener("click", async (): Promise<void> => {
+    mostrarSeccion("pedidos");
+    await renderPedidosAdmin();
+});
+
+btnVerDashboard?.addEventListener("click", async (): Promise<void> => {
+    mostrarSeccion("dashboard");
+    await renderDashboard();
 });
 
 // ── Cargar categorías en ambos selects ──
@@ -457,10 +489,39 @@ formProducto?.addEventListener("submit", async (event: Event): Promise<void> => 
     }
 });
 
+const renderDashboard = async (): Promise<void> => {
+    if (!dashTotalCategorias || !dashTotalProductos || !dashTotalPedidos || !dashTotalDisponibles || !dashResumenContenido) return;
+
+    try {
+        const [categorias, productos, pedidos] = await Promise.all([
+            getCategories(),
+            getProducts(),
+            getAllOrders()
+        ]);;
+
+        dashTotalCategorias.textContent = categorias.length.toString();
+        dashTotalProductos.textContent = productos.length.toString();
+        dashTotalPedidos.textContent = pedidos.length.toString();
+
+        const disponibles = productos.filter((p) => p.disponible).length;
+        dashTotalDisponibles.textContent = disponibles.toString();
+
+        dashResumenContenido.innerHTML = `
+            <p><strong>Categorías:</strong> ${categorias.length}</p>
+            <p><strong>Productos:</strong> ${productos.length}</p>
+            <p><strong>Pedidos:</strong> ${pedidos.length}</p>
+            <p><strong>Disponibles:</strong> ${disponibles}</p>
+        `;
+    } catch (error) {
+        console.error("Error al renderizar el dashboard:", error);
+    }
+};
+
 // ── Inicialización ──
 const init = async (): Promise<void> => {
     await cargarCategorias();
-    await renderTabla();
+    mostrarSeccion("dashboard");
+    await renderDashboard();
 };
 
 init();
