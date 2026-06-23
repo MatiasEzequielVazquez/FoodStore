@@ -64,7 +64,7 @@ cd foodstore-backend
 
 El backend va a quedar disponible en `http://localhost:8080`.
 
-> La base de datos PostgreSQL se recrea en cada arranque (`ddl-auto=create-drop`). Al iniciar, el sistema carga automáticamente:
+> La base de datos PostgreSQL persiste entre reinicios (`ddl-auto=update`). Al iniciar, el sistema carga automáticamente:
 > - Un usuario administrador por defecto
 > - Un set inicial de categorías y productos de ejemplo
 
@@ -101,8 +101,8 @@ El frontend va a quedar disponible en `http://localhost:5173`.
 
 ## Documentación y video
 
-- Documentación técnica y académica (PDF): *Pendiente*
-- Video demostrativo: *Pendiente*
+- [Documentación técnica y académica (PDF)](https://drive.google.com/file/d/1AtI8OdjmOdkURebd3js15b_pJOcHlDJT/view?usp=sharing)
+- [Video demostrativo](https://drive.google.com/file/d/1VO523qN1gX7tgcrPX_DPYtLPqRL5Z96V/view?usp=sharing)
 
 ## Autor
 
